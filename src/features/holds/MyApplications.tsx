@@ -54,87 +54,99 @@ export const MyApplications: React.FC<MyApplicationsProps> = ({ onBrowseClasses 
   const historyCount = myHolds.filter((h) => h.status === 'EXPIRED' || h.status === 'CANCELLED').length;
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6">
       {/* Header Banner */}
-      <div className="bg-white border border-slate-200 rounded-2xl p-6 sm:p-8 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-6">
+      <div className="bg-white border border-zinc-200/90 rounded-2xl p-6 sm:p-8 shadow-2xs flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div>
-          <div className="flex items-center gap-2 text-xs font-semibold text-indigo-600 uppercase tracking-wider mb-2">
-            <UserCheck className="w-4 h-4" />
-            <span>Student Admission Portal</span>
+          <div className="flex items-center gap-2 text-xs font-semibold text-orange-800 uppercase tracking-wider mb-2">
+            <UserCheck className="w-4 h-4 text-orange-600" />
+            <span>Student Application Portal</span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-zinc-900 tracking-tight">
             My Applications & Reservations
           </h1>
-          <p className="text-sm text-slate-600 mt-1">
-            Tracking applications for <strong className="text-slate-900">{student.name}</strong> (BRN:{' '}
-            <span className="font-mono text-indigo-600 font-semibold">{formatBRN(student.id)}</span>)
+          <p className="text-sm text-zinc-500 mt-1">
+            Tracking enrollment records for <strong className="text-zinc-900 font-semibold">{student.name}</strong> • BRN:{' '}
+            <span className="text-orange-700 font-medium">{formatBRN(student.id)}</span>
           </p>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2.5">
           <Button
             variant="outline"
-            size="default"
+            size="sm"
             onClick={handleManualRefresh}
             isLoading={isRefreshing || isLoadingHolds}
-            leftIcon={<RotateCw className={`w-4 h-4 ${isRefreshing ? 'animate-spin' : ''}`} />}
+            leftIcon={<RotateCw className={`w-3.5 h-3.5 ${isRefreshing ? 'animate-spin' : ''}`} />}
           >
-            Refresh Status
+            Refresh
           </Button>
-          <Button variant="default" size="default" onClick={onBrowseClasses} leftIcon={<BookOpen className="w-4 h-4" />}>
+          <Button variant="default" size="sm" onClick={onBrowseClasses} leftIcon={<BookOpen className="w-3.5 h-3.5" />}>
             Browse Classes
           </Button>
         </div>
       </div>
 
-      {/* Filter Tabs */}
-      <div className="flex items-center gap-2 border-b border-slate-200 pb-4 overflow-x-auto">
+      {/* Modern Orange Segmented Control */}
+      <div className="bg-zinc-100/90 p-1 rounded-xl flex items-center gap-1 border border-zinc-200/60 w-fit overflow-x-auto max-w-full">
         <button
           onClick={() => setFilter('all')}
-          className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition-all cursor-pointer ${
+          className={`flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-medium transition-all cursor-pointer whitespace-nowrap ${
             filter === 'all'
-              ? 'bg-indigo-600 text-white shadow-xs'
-              : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+              ? 'bg-orange-600 text-white shadow-xs font-semibold'
+              : 'text-zinc-600 hover:text-zinc-900 hover:bg-zinc-200/60'
           }`}
         >
-          <Inbox className="w-4 h-4" />
-          <span>All Applications ({myHolds.length})</span>
+          <Inbox className="w-3.5 h-3.5" />
+          <span>All Applications</span>
+          <span className={`text-[10px] px-1.5 py-0.2 rounded-full ${filter === 'all' ? 'bg-orange-700 text-white' : 'bg-zinc-200 text-zinc-700'}`}>
+            {myHolds.length}
+          </span>
         </button>
 
         <button
           onClick={() => setFilter('HELD')}
-          className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition-all cursor-pointer ${
+          className={`flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-medium transition-all cursor-pointer whitespace-nowrap ${
             filter === 'HELD'
-              ? 'bg-amber-600 text-white shadow-xs'
-              : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+              ? 'bg-orange-600 text-white shadow-xs font-semibold'
+              : 'text-zinc-600 hover:text-zinc-900 hover:bg-zinc-200/60'
           }`}
         >
-          <Clock className="w-4 h-4" />
-          <span>Active Holds ({activeCount})</span>
+          <Clock className="w-3.5 h-3.5 text-amber-500" />
+          <span>Active Holds</span>
+          <span className={`text-[10px] px-1.5 py-0.2 rounded-full ${filter === 'HELD' ? 'bg-orange-700 text-white' : 'bg-zinc-200 text-zinc-700'}`}>
+            {activeCount}
+          </span>
         </button>
 
         <button
           onClick={() => setFilter('CONFIRMED')}
-          className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition-all cursor-pointer ${
+          className={`flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-medium transition-all cursor-pointer whitespace-nowrap ${
             filter === 'CONFIRMED'
-              ? 'bg-emerald-600 text-white shadow-xs'
-              : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+              ? 'bg-orange-600 text-white shadow-xs font-semibold'
+              : 'text-zinc-600 hover:text-zinc-900 hover:bg-zinc-200/60'
           }`}
         >
-          <CheckCircle2 className="w-4 h-4" />
-          <span>Confirmed ({confirmedCount})</span>
+          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />
+          <span>Confirmed</span>
+          <span className={`text-[10px] px-1.5 py-0.2 rounded-full ${filter === 'CONFIRMED' ? 'bg-orange-700 text-white' : 'bg-zinc-200 text-zinc-700'}`}>
+            {confirmedCount}
+          </span>
         </button>
 
         <button
           onClick={() => setFilter('HISTORY')}
-          className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition-all cursor-pointer ${
+          className={`flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-medium transition-all cursor-pointer whitespace-nowrap ${
             filter === 'HISTORY'
-              ? 'bg-slate-700 text-white shadow-xs'
-              : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+              ? 'bg-orange-600 text-white shadow-xs font-semibold'
+              : 'text-zinc-600 hover:text-zinc-900 hover:bg-zinc-200/60'
           }`}
         >
-          <AlertOctagon className="w-4 h-4" />
-          <span>Expired / Cancelled ({historyCount})</span>
+          <AlertOctagon className="w-3.5 h-3.5 text-zinc-400" />
+          <span>Expired / Cancelled</span>
+          <span className={`text-[10px] px-1.5 py-0.2 rounded-full ${filter === 'HISTORY' ? 'bg-orange-700 text-white' : 'bg-zinc-200 text-zinc-700'}`}>
+            {historyCount}
+          </span>
         </button>
       </div>
 
@@ -146,18 +158,18 @@ export const MyApplications: React.FC<MyApplicationsProps> = ({ onBrowseClasses 
           ))}
         </div>
       ) : (
-        <Card className="text-center py-16 px-4 bg-white border-slate-200">
+        <Card className="text-center py-16 px-4 bg-white border-zinc-200/90 rounded-2xl shadow-2xs">
           <CardContent>
-            <div className="w-14 h-14 mx-auto rounded-2xl bg-slate-100 flex items-center justify-center text-slate-400 mb-4">
-              <Inbox className="w-7 h-7 text-indigo-600" />
+            <div className="w-12 h-12 mx-auto rounded-xl bg-zinc-100 flex items-center justify-center text-zinc-600 mb-4">
+              <Inbox className="w-6 h-6" />
             </div>
-            <h3 className="text-lg font-bold text-slate-900">No Applications Found</h3>
-            <p className="text-sm text-slate-500 max-w-sm mx-auto mt-1">
+            <h3 className="text-base font-bold text-zinc-900">No Applications Found</h3>
+            <p className="text-xs text-zinc-500 max-w-sm mx-auto mt-1 leading-relaxed">
               {filter === 'all'
                 ? "You haven't submitted any admission applications yet. Browse active classes to reserve a seat."
-                : `No applications found with status filter "${filter}".`}
+                : `No applications found matching the "${filter}" filter.`}
             </p>
-            <Button variant="default" size="default" className="mt-5" onClick={onBrowseClasses}>
+            <Button variant="default" size="sm" className="mt-5" onClick={onBrowseClasses}>
               Explore Available Classes
             </Button>
           </CardContent>

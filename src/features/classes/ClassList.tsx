@@ -12,7 +12,7 @@ import {
   Layers,
   Armchair,
   Clock,
-  CheckCircle,
+  CheckCircle2,
   AlertCircle,
   GraduationCap,
 } from 'lucide-react';
@@ -115,79 +115,79 @@ export const ClassList: React.FC<ClassListProps> = ({
   }, [classes, searchQuery, filterType]);
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6">
       {/* Hero Welcome Banner */}
-      <div className="bg-white border border-slate-200 rounded-2xl p-6 sm:p-8 shadow-xs">
+      <div className="bg-white border border-zinc-200/90 rounded-2xl p-6 sm:p-8 shadow-2xs">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div className="space-y-2 max-w-2xl">
-            <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-md bg-indigo-50 text-indigo-700 text-xs font-semibold border border-indigo-200">
-              <GraduationCap className="w-3.5 h-3.5" />
+            <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-md bg-orange-50 text-orange-800 text-xs font-medium border border-orange-200/80">
+              <GraduationCap className="w-3.5 h-3.5 text-orange-600" />
               <span>Academic Admission Portal</span>
             </div>
-            <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
-              Apply for Grade Admission
+            <h1 className="text-2xl sm:text-3xl font-extrabold text-zinc-900 tracking-tight">
+              Grade Admission & Seat Allocation
             </h1>
-            <p className="text-sm text-slate-600 leading-relaxed">
+            <p className="text-sm text-zinc-500 leading-relaxed">
               Explore available classes and reserve your admission seat in real-time. Once reserved,
               your seat is held for 10 minutes to allow you to confirm enrollment.
             </p>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2.5">
             <Button
               variant="outline"
-              size="default"
+              size="sm"
               onClick={() => fetchClasses(true)}
               isLoading={isRefreshing}
-              leftIcon={<RotateCw className={`w-4 h-4 ${isRefreshing ? 'animate-spin' : ''}`} />}
+              leftIcon={<RotateCw className={`w-3.5 h-3.5 ${isRefreshing ? 'animate-spin' : ''}`} />}
             >
               Refresh Seats
             </Button>
-            <Button variant="default" size="default" onClick={onViewMyApplications}>
+            <Button variant="default" size="sm" onClick={onViewMyApplications}>
               My Applications
             </Button>
           </div>
         </div>
 
         {/* Metric Overview Cards */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mt-8">
-          <div className="bg-slate-50 border border-slate-200 rounded-xl p-4">
-            <div className="flex items-center justify-between text-slate-500 text-xs font-medium">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mt-7 pt-6 border-t border-zinc-100">
+          <div className="bg-zinc-50/70 border border-zinc-200/70 rounded-xl p-3.5">
+            <div className="flex items-center justify-between text-zinc-500 text-xs font-medium">
               <span>Grade Divisions</span>
-              <Layers className="w-4 h-4 text-indigo-600" />
+              <Layers className="w-4 h-4 text-zinc-600" />
             </div>
-            <p className="text-2xl font-extrabold text-slate-900 mt-2">{classes.length}</p>
-            <p className="text-xs text-slate-400 mt-1">Active class sections</p>
+            <p className="text-2xl font-extrabold text-zinc-900 mt-1.5 tracking-tight">{classes.length}</p>
+            <p className="text-xs text-zinc-400 mt-0.5">Active class sections</p>
           </div>
 
-          <div className="bg-slate-50 border border-slate-200 rounded-xl p-4">
-            <div className="flex items-center justify-between text-slate-500 text-xs font-medium">
+          <div className="bg-zinc-50/70 border border-zinc-200/70 rounded-xl p-3.5">
+            <div className="flex items-center justify-between text-zinc-500 text-xs font-medium">
               <span>Open Seats</span>
-              <Armchair className="w-4 h-4 text-indigo-600" />
+              <Armchair className="w-4 h-4 text-orange-600" />
             </div>
-            <p className="text-2xl font-extrabold text-indigo-600 mt-2">
+            <p className="text-2xl font-extrabold text-orange-600 mt-1.5 tracking-tight">
               {stats.availableSeats}{' '}
-              <span className="text-xs font-normal text-slate-400">/ {stats.totalSeats}</span>
+              <span className="text-xs font-normal text-zinc-400">/ {stats.totalSeats}</span>
             </p>
-            <p className="text-xs text-slate-400 mt-1">Available for application</p>
+            <p className="text-xs text-zinc-400 mt-0.5">Available for reservation</p>
           </div>
 
-          <div className="bg-slate-50 border border-slate-200 rounded-xl p-4">
-            <div className="flex items-center justify-between text-slate-500 text-xs font-medium">
+          <div className="bg-zinc-50/70 border border-zinc-200/70 rounded-xl p-3.5">
+            <div className="flex items-center justify-between text-zinc-500 text-xs font-medium">
               <span>Active Holds</span>
-              <Clock className="w-4 h-4 text-amber-600" />
+              <Clock className="w-4 h-4 text-amber-500" />
             </div>
-            <p className="text-2xl font-extrabold text-amber-600 mt-2">{stats.heldSeats}</p>
-            <p className="text-xs text-slate-400 mt-1">Temporary 10m holds</p>
+            <p className="text-2xl font-extrabold text-amber-700 mt-1.5 tracking-tight">{stats.heldSeats}</p>
+            <p className="text-xs text-zinc-400 mt-0.5">Temporary 10m holds</p>
           </div>
 
-          <div className="bg-slate-50 border border-slate-200 rounded-xl p-4">
-            <div className="flex items-center justify-between text-slate-500 text-xs font-medium">
+          <div className="bg-zinc-50/70 border border-zinc-200/70 rounded-xl p-3.5">
+            <div className="flex items-center justify-between text-zinc-500 text-xs font-medium">
               <span>Confirmed Admissions</span>
-              <CheckCircle className="w-4 h-4 text-emerald-600" />
+              <CheckCircle2 className="w-4 h-4 text-emerald-600" />
             </div>
-            <p className="text-2xl font-extrabold text-emerald-600 mt-2">{stats.confirmedSeats}</p>
-            <p className="text-xs text-slate-400 mt-1">Officially enrolled</p>
+            <p className="text-2xl font-extrabold text-emerald-700 mt-1.5 tracking-tight">{stats.confirmedSeats}</p>
+            <p className="text-xs text-zinc-400 mt-0.5">Officially enrolled</p>
           </div>
         </div>
       </div>
@@ -195,47 +195,47 @@ export const ClassList: React.FC<ClassListProps> = ({
       {/* Search & Filter Toolbar */}
       <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
         <div className="relative flex-1 max-w-md">
-          <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+          <Search className="w-4 h-4 text-zinc-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
           <input
             type="text"
-            placeholder="Search grade or class (e.g. Class 1, Class 9)..."
+            placeholder="Search grade or section (e.g. Class 6, Class 9)..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full bg-white border border-slate-200 rounded-xl pl-10 pr-4 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 shadow-xs"
+            className="w-full bg-white border border-zinc-200 rounded-xl pl-10 pr-4 py-2 text-xs sm:text-sm text-zinc-900 placeholder:text-zinc-400 outline-none focus:border-orange-600 focus:ring-2 focus:ring-orange-600/15 shadow-2xs transition-all"
           />
         </div>
 
         <div className="flex items-center gap-2">
-          <span className="text-xs text-slate-500 font-semibold flex items-center gap-1.5 pl-1">
+          <span className="text-xs text-zinc-500 font-medium flex items-center gap-1.5 pl-1">
             <Filter className="w-3.5 h-3.5" /> Filter:
           </span>
-          <div className="flex bg-slate-100 p-1 rounded-xl border border-slate-200">
+          <div className="flex bg-zinc-100/90 p-1 rounded-xl border border-zinc-200/60">
             <button
               onClick={() => setFilterType('all')}
-              className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
+              className={`px-3 py-1 rounded-lg text-xs font-medium transition-all cursor-pointer ${
                 filterType === 'all'
-                  ? 'bg-white text-indigo-600 shadow-xs'
-                  : 'text-slate-600 hover:text-slate-900'
+                  ? 'bg-orange-600 text-white shadow-xs font-semibold'
+                  : 'text-zinc-600 hover:text-zinc-900 hover:bg-zinc-200/60'
               }`}
             >
               All ({classes.length})
             </button>
             <button
               onClick={() => setFilterType('available')}
-              className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
+              className={`px-3 py-1 rounded-lg text-xs font-medium transition-all cursor-pointer ${
                 filterType === 'available'
-                  ? 'bg-white text-indigo-600 shadow-xs'
-                  : 'text-slate-600 hover:text-slate-900'
+                  ? 'bg-orange-600 text-white shadow-xs font-semibold'
+                  : 'text-zinc-600 hover:text-zinc-900 hover:bg-zinc-200/60'
               }`}
             >
               Available
             </button>
             <button
               onClick={() => setFilterType('full')}
-              className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
+              className={`px-3 py-1 rounded-lg text-xs font-medium transition-all cursor-pointer ${
                 filterType === 'full'
-                  ? 'bg-white text-indigo-600 shadow-xs'
-                  : 'text-slate-600 hover:text-slate-900'
+                  ? 'bg-orange-600 text-white shadow-xs font-semibold'
+                  : 'text-zinc-600 hover:text-zinc-900 hover:bg-zinc-200/60'
               }`}
             >
               Full
@@ -250,7 +250,7 @@ export const ClassList: React.FC<ClassListProps> = ({
           <div className="flex items-start gap-3">
             <AlertCircle className="w-5 h-5 text-rose-600 shrink-0 mt-0.5" />
             <div>
-              <h4 className="text-sm font-bold text-rose-900">Unable to Fetch Class Data</h4>
+              <h4 className="text-xs sm:text-sm font-bold text-rose-900">Unable to Fetch Class Data</h4>
               <p className="text-xs text-rose-700 mt-0.5">{errorMsg}</p>
             </div>
           </div>
@@ -264,16 +264,16 @@ export const ClassList: React.FC<ClassListProps> = ({
       {isLoading && (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {[1, 2, 3, 4, 5, 6].map((i) => (
-            <Card key={i} className="bg-white border-slate-200 animate-pulse p-6 h-64 flex flex-col justify-between">
+            <Card key={i} className="bg-white border-zinc-200/80 animate-pulse p-6 h-64 flex flex-col justify-between rounded-2xl">
               <div className="space-y-3">
-                <div className="h-4 bg-slate-200 rounded w-1/3" />
-                <div className="h-6 bg-slate-200 rounded w-2/3" />
+                <div className="h-4 bg-zinc-200 rounded w-1/3" />
+                <div className="h-6 bg-zinc-200 rounded w-2/3" />
               </div>
               <div className="grid grid-cols-2 gap-3">
-                <div className="h-16 bg-slate-100 rounded-xl" />
-                <div className="h-16 bg-slate-100 rounded-xl" />
+                <div className="h-16 bg-zinc-100 rounded-xl" />
+                <div className="h-16 bg-zinc-100 rounded-xl" />
               </div>
-              <div className="h-10 bg-slate-200 rounded-xl" />
+              <div className="h-10 bg-zinc-200 rounded-xl" />
             </Card>
           ))}
         </div>
@@ -295,13 +295,13 @@ export const ClassList: React.FC<ClassListProps> = ({
 
       {/* Empty State */}
       {!isLoading && !errorMsg && filteredClasses.length === 0 && (
-        <Card className="text-center py-16 px-4 bg-white border-slate-200">
+        <Card className="text-center py-16 px-4 bg-white border-zinc-200/90 rounded-2xl shadow-2xs">
           <CardContent>
-            <div className="w-14 h-14 mx-auto rounded-2xl bg-slate-100 flex items-center justify-center text-slate-400 mb-4">
-              <GraduationCap className="w-7 h-7 text-indigo-600" />
+            <div className="w-12 h-12 mx-auto rounded-xl bg-orange-50 border border-orange-100 flex items-center justify-center text-orange-600 mb-4">
+              <GraduationCap className="w-6 h-6" />
             </div>
-            <h3 className="text-lg font-bold text-slate-900">No Admission Classes Found</h3>
-            <p className="text-sm text-slate-500 max-w-sm mx-auto mt-1">
+            <h3 className="text-base font-bold text-zinc-900">No Admission Classes Found</h3>
+            <p className="text-xs text-zinc-500 max-w-sm mx-auto mt-1 leading-relaxed">
               {searchQuery
                 ? `No classes matching "${searchQuery}". Try a different keyword.`
                 : 'No admission classes are currently active. Head over to the Admin Portal to set up new classes.'}
@@ -309,7 +309,7 @@ export const ClassList: React.FC<ClassListProps> = ({
             {!searchQuery && (
               <Button
                 variant="default"
-                size="default"
+                size="sm"
                 className="mt-5"
                 onClick={onNavigateToAdmin}
               >

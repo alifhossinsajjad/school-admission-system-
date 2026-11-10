@@ -47,16 +47,16 @@ export const ClassCard: React.FC<ClassCardProps> = ({
 
   const handleApplyHold = async () => {
     if (!student.id) {
-      warning('Student ID প্রয়োজন', 'অনুগ্রহ করে শিক্ষার্থী সিলেক্ট বা ১৭-ডিজিট জন্ম নিবন্ধন নম্বর দিন।');
+      warning('Student ID Required', 'Please enter or select a 17-digit birth registration number (BRN).');
       return;
     }
 
     if (existingHold) {
       warning(
-        'ইতিমধ্যে আবেদন করা হয়েছে',
+        'Application Already Active',
         existingHold.status === 'CONFIRMED'
-          ? 'এই শ্রেণীতে আপনার ভর্তি ইতিমধ্যে নিশ্চিত হয়েছে।'
-          : 'এই শ্রেণীতে আপনার একটি সক্রিয় আবেদন রয়েছে। অনুগ্রহ করে ভর্তি ফি দিন অথবা আবেদন বাতিল করুন।'
+          ? 'You are already enrolled in this class.'
+          : 'You already hold an active reservation for this class. Complete payment or cancel to re-apply.'
       );
       onViewMyApplications();
       return;
@@ -66,21 +66,21 @@ export const ClassCard: React.FC<ClassCardProps> = ({
     try {
       await api.createHold(schoolClass.id, student.id);
       success(
-        'সিট সংরক্ষিত হয়েছে! (Seat Held)',
-        `${schoolClass.name} শ্রেণীতে আসনটি ১০ মিনিটের জন্য ধরে রাখা হয়েছে। নির্ধারিত সময়ের মধ্যে ভর্তি ফি দিন।`
+        'Seat Reserved (Held)!',
+        `Your seat in ${schoolClass.name} is reserved for 10 minutes. Please confirm admission before expiry.`
       );
       onHoldCreated();
     } catch (err) {
       if (err instanceof ApiError) {
         if (err.status === 409) {
-          error('আবেদন দ্বন্দ (409)', err.message);
+          error('Application Conflict (409)', err.message);
         } else if (err.status === 400) {
-          error('ভুল তথ্য (400)', err.message);
+          error('Invalid Request (400)', err.message);
         } else {
-          error('আবেদন ব্যর্থ হয়েছে', err.message);
+          error('Reservation Failed', err.message);
         }
       } else {
-        error('আবেদন ব্যর্থ হয়েছে', 'সার্ভারে সংযোগে সমস্যা হয়েছে। আবার চেষ্টা করুন।');
+        error('Connection Error', 'Could not reach server. Please try again.');
       }
     } finally {
       setIsReserving(false);
@@ -93,11 +93,11 @@ export const ClassCard: React.FC<ClassCardProps> = ({
     try {
       await api.confirmHold(existingHold.holdId, student.id);
       setIsConfirmDialogOpen(false);
-      success('ভর্তি নিশ্চিত হয়েছে! 🎉', `${schoolClass.name} শ্রেণীতে আপনার ভর্তি সম্পূর্ণ হয়েছে।`);
+      success('Admission Confirmed!', `Enrollment for ${schoolClass.name} is complete.`);
       await refreshMyHolds();
       onHoldCreated();
     } catch (err) {
-      error('ভর্তি নিশ্চিত করা যায়নি', err instanceof Error ? err.message : 'ত্রুটি ঘটেছে');
+      error('Confirmation Failed', err instanceof Error ? err.message : 'Error confirming hold');
     } finally {
       setIsConfirming(false);
     }
@@ -109,11 +109,11 @@ export const ClassCard: React.FC<ClassCardProps> = ({
     try {
       await api.cancelHold(existingHold.holdId, student.id);
       setIsCancelDialogOpen(false);
-      success('আবেদন বাতিল হয়েছে', `${schoolClass.name} শ্রেণীর সিট হোল্ড বাতিল করা হয়েছে।`);
+      success('Reservation Released', `Hold for ${schoolClass.name} was cancelled and seat returned to pool.`);
       await refreshMyHolds();
       onHoldCreated();
     } catch (err) {
-      error('আবেদন বাতিল করা যায়নি', err instanceof Error ? err.message : 'ত্রুটি ঘটেছে');
+      error('Cancellation Failed', err instanceof Error ? err.message : 'Error cancelling hold');
     } finally {
       setIsCancelling(false);
     }
@@ -121,15 +121,15 @@ export const ClassCard: React.FC<ClassCardProps> = ({
 
   return (
     <>
-      <Card className="bg-white border-slate-200 shadow-xs hover:shadow-md transition-shadow flex flex-col justify-between">
+      <Card className="bg-white border-zinc-200/90 shadow-2xs hover:shadow-md transition-all duration-200 flex flex-col justify-between rounded-2xl overflow-hidden">
         <div>
-          <CardHeader className="pb-3">
+          <CardHeader className="pb-3 border-b border-zinc-100">
             <div className="flex items-start justify-between gap-3">
               <div>
-                <span className="text-[11px] font-bold uppercase tracking-wider text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded border border-indigo-200">
-                  Grade Division
+                <span className="text-[10px] font-medium text-orange-800 bg-orange-50 px-2 py-0.5 rounded-md border border-orange-200/70 inline-block mb-1.5">
+                  Grade & Section
                 </span>
-                <CardTitle className="text-xl text-slate-900 mt-2">
+                <CardTitle className="text-base sm:text-lg font-bold text-zinc-900 tracking-tight">
                   {schoolClass.name}
                 </CardTitle>
               </div>
@@ -160,39 +160,39 @@ export const ClassCard: React.FC<ClassCardProps> = ({
             </div>
           </CardHeader>
 
-          <CardContent className="space-y-4">
+          <CardContent className="space-y-4 pt-4">
             {/* Seat Counters Grid */}
             <div className="grid grid-cols-2 gap-3">
-              <div className="bg-slate-50 p-3 rounded-xl border border-slate-200">
-                <div className="flex items-center gap-1.5 text-xs text-slate-500 font-medium">
-                  <Armchair className="w-3.5 h-3.5 text-indigo-600" />
+              <div className="bg-zinc-50/80 p-3 rounded-xl border border-zinc-200/70">
+                <div className="flex items-center gap-1.5 text-xs text-zinc-500 font-medium">
+                  <Armchair className="w-3.5 h-3.5 text-orange-600" />
                   <span>Available Seats</span>
                 </div>
-                <p className="text-xl font-extrabold text-slate-900 mt-1">
+                <p className="text-xl sm:text-2xl font-extrabold text-zinc-900 mt-1 tracking-tight">
                   {schoolClass.availableSeats}{' '}
-                  <span className="text-xs font-normal text-slate-400">/ {schoolClass.totalSeats}</span>
+                  <span className="text-xs font-normal text-zinc-400">/ {schoolClass.totalSeats}</span>
                 </p>
               </div>
 
-              <div className="bg-slate-50 p-3 rounded-xl border border-slate-200">
-                <div className="flex items-center gap-1.5 text-xs text-slate-500 font-medium">
+              <div className="bg-zinc-50/80 p-3 rounded-xl border border-zinc-200/70">
+                <div className="flex items-center gap-1.5 text-xs text-zinc-500 font-medium">
                   <Users className="w-3.5 h-3.5 text-emerald-600" />
                   <span>Confirmed</span>
                 </div>
-                <p className="text-xl font-extrabold text-emerald-600 mt-1">
+                <p className="text-xl sm:text-2xl font-extrabold text-emerald-700 mt-1 tracking-tight">
                   {schoolClass.confirmedSeats}
                 </p>
               </div>
             </div>
 
             {/* Seat Progress Gauge */}
-            <div className="space-y-1.5">
+            <div className="space-y-1.5 pt-1">
               <div className="flex justify-between items-center text-xs">
-                <span className="text-slate-500 font-medium">Quota Filled</span>
-                <span className="text-slate-700 font-bold">{fillPct}%</span>
+                <span className="text-zinc-500 font-medium">Capacity Filled</span>
+                <span className="text-zinc-700 font-semibold">{fillPct}%</span>
               </div>
-              <Progress value={fillPct} className="h-2" />
-              <div className="flex justify-between text-[11px] text-slate-500 pt-0.5">
+              <Progress value={fillPct} className="h-2 bg-zinc-100" />
+              <div className="flex justify-between text-[11px] text-zinc-400 pt-0.5">
                 <span>{schoolClass.heldSeats} in pending holds</span>
                 <span>{schoolClass.availableSeats} open</span>
               </div>
@@ -200,37 +200,37 @@ export const ClassCard: React.FC<ClassCardProps> = ({
           </CardContent>
         </div>
 
-        {/* Action Buttons: Apply, Confirm ("ভর্তি ফি দিন"), or Cancel ("আবেদন বাতিল") */}
-        <CardFooter className="pt-2 border-t border-slate-100 flex items-center gap-2">
+        {/* Action Buttons */}
+        <CardFooter className="pt-3 pb-3 border-t border-zinc-100 flex items-center gap-2">
           {existingHold?.status === 'HELD' ? (
             <>
               <Button
                 variant="emerald"
                 size="sm"
-                className="flex-1 text-xs"
+                className="flex-1 font-medium text-xs"
                 leftIcon={<CreditCard className="w-4 h-4" />}
                 onClick={() => setIsConfirmDialogOpen(true)}
               >
-                ভর্তি ফি দিন
+                Confirm Admission
               </Button>
               <Button
                 variant="outline"
                 size="sm"
-                className="text-rose-600 border-rose-200 hover:bg-rose-50 text-xs"
+                className="text-zinc-600 hover:text-rose-600 hover:border-rose-200 hover:bg-rose-50/50 text-xs font-medium"
                 leftIcon={<Trash2 className="w-4 h-4" />}
                 onClick={() => setIsCancelDialogOpen(true)}
               >
-                বাতিল করুন
+                Cancel Hold
               </Button>
             </>
           ) : existingHold?.status === 'CONFIRMED' ? (
             <Button
               variant="outline"
-              className="w-full text-emerald-700 border-emerald-200 bg-emerald-50/50"
+              className="w-full text-emerald-800 border-emerald-200/90 bg-emerald-50/40 hover:bg-emerald-50 text-xs font-medium"
               onClick={onViewMyApplications}
               leftIcon={<CheckCircle2 className="w-4 h-4 text-emerald-600" />}
             >
-              ভর্তি নিশ্চিত হয়েছে (View)
+              Enrolled • View Application
             </Button>
           ) : (
             <Button
@@ -238,10 +238,10 @@ export const ClassCard: React.FC<ClassCardProps> = ({
               disabled={isFull}
               isLoading={isReserving}
               onClick={handleApplyHold}
-              className="w-full"
-              leftIcon={<Sparkles className="w-4 h-4" />}
+              className="w-full text-xs font-medium"
+              leftIcon={<Sparkles className="w-3.5 h-3.5" />}
             >
-              {isFull ? 'Class Fully Booked' : 'Apply / Reserve Seat (Hold)'}
+              {isFull ? 'Class Fully Booked' : 'Reserve Seat (Hold)'}
             </Button>
           )}
         </CardFooter>
@@ -251,66 +251,71 @@ export const ClassCard: React.FC<ClassCardProps> = ({
       <Dialog open={isConfirmDialogOpen} onOpenChange={setIsConfirmDialogOpen}>
         <DialogContent className="max-w-md">
           <DialogHeader>
-            <DialogTitle>ভর্তি নিশ্চিতকরণ ({schoolClass.name})</DialogTitle>
+            <DialogTitle>Confirm Admission ({schoolClass.name})</DialogTitle>
             <DialogDescription>
-              {schoolClass.name} শ্রেণীতে আপনার সিটটি স্থায়ীভাবে নিশ্চিত করতে ফি প্রদান করুন।
+              Submit simulated fee payment to permanently secure the student seat.
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-3 py-2 text-xs">
-            <p className="text-slate-600">
-              ভর্তি ফি প্রদান করলে আসনটি নিশ্চিত হবে এবং ১০ মিনিটের হোল্ড টাইমার স্থায়ী আসনে রূপান্তরিত হবে।
+            <p className="text-zinc-600 leading-relaxed">
+              Confirming admission converts your 10-minute temporary reservation into a permanent student enrollment.
             </p>
             <DialogFooter className="pt-2">
-              <Button variant="outline" onClick={() => setIsConfirmDialogOpen(false)}>
-                ফিরে যান
+              <Button variant="outline" size="sm" onClick={() => setIsConfirmDialogOpen(false)}>
+                Back
               </Button>
               <Button
                 variant="emerald"
+                size="sm"
                 isLoading={isConfirming}
                 onClick={handleConfirmAdmission}
                 leftIcon={<CheckCircle2 className="w-4 h-4" />}
               >
-                ভর্তি ফি জমা দিন (Confirm)
+                Pay Fee & Confirm
               </Button>
             </DialogFooter>
           </div>
         </DialogContent>
       </Dialog>
 
-      {/* Delete / Cancel Hold Confirmation Modal */}
+      {/* Cancel Hold Confirmation Dialog */}
       <Dialog open={isCancelDialogOpen} onOpenChange={setIsCancelDialogOpen}>
         <DialogContent className="max-w-md">
           <DialogHeader>
-            <DialogTitle>আবেদন বাতিল নিশ্চিতকরণ</DialogTitle>
+            <DialogTitle>Cancel Seat Reservation</DialogTitle>
             <DialogDescription>
-              আপনি কি নিশ্চিত যে আপনি {schoolClass.name} শ্রেণীর সংরক্ষিত আসনটি বাতিল করতে চান?
+              Are you sure you want to release the held seat for {schoolClass.name}?
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-3 py-2 text-xs">
-            <div className="p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 space-y-1">
-              <div className="flex items-center gap-1.5 font-bold">
+            <div className="p-3.5 rounded-xl bg-rose-50/80 border border-rose-200 text-rose-900 space-y-1">
+              <div className="flex items-center gap-1.5 font-semibold text-rose-800">
                 <AlertTriangle className="w-4 h-4 text-rose-600" />
-                <span>সতর্কবার্তা</span>
+                <span>Immediate Seat Release Notice</span>
               </div>
-              <p>আবেদন বাতিল করলে আসনটি তাৎক্ষণিক অন্য শিক্ষার্থীদের জন্য উন্মুক্ত হয়ে যাবে।</p>
+              <p className="text-zinc-600 leading-relaxed">
+                Cancelling this hold immediately releases the seat back into the public pool for other applicants.
+              </p>
             </div>
             <DialogFooter className="pt-2">
               <Button
                 type="button"
                 variant="outline"
+                size="sm"
                 onClick={() => setIsCancelDialogOpen(false)}
                 disabled={isCancelling}
               >
-                না, আসনটি রাখুন
+                Keep Seat
               </Button>
               <Button
                 type="button"
                 variant="destructive"
+                size="sm"
                 isLoading={isCancelling}
                 onClick={handleCancelHold}
                 leftIcon={<Trash2 className="w-4 h-4" />}
               >
-                হ্যাঁ, আবেদন বাতিল করুন
+                Confirm Cancellation
               </Button>
             </DialogFooter>
           </div>

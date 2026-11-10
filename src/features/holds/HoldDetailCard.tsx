@@ -48,7 +48,7 @@ export const HoldDetailCard: React.FC<HoldDetailCardProps> = ({ hold, onRefresh 
 
   const handleConfirmAdmission = async () => {
     if (isEffectivelyExpired) {
-      error('মেয়াদ উত্তীর্ণ', 'এই আবেদনের ১০ মিনিটের মেয়াদ শেষ হয়ে গেছে। আর ফি প্রদান করা যাবে না।');
+      error('Hold Expired', 'The 10-minute seat hold has expired. Fee payment is no longer permitted.');
       return;
     }
 
@@ -57,15 +57,15 @@ export const HoldDetailCard: React.FC<HoldDetailCardProps> = ({ hold, onRefresh 
       await api.confirmHold(hold.holdId, student.id);
       setIsConfirmDialogOpen(false);
       success(
-        'ভর্তি সফলভাবে নিশ্চিত হয়েছে! 🎉',
-        `${hold.className} শ্রেণীতে আপনার আসনটি স্থায়ীভাবে কনফার্ম করা হয়েছে।`
+        'Admission Confirmed!',
+        `Your seat in ${hold.className} is now permanently booked.`
       );
       onRefresh();
     } catch (err) {
       if (err instanceof ApiError) {
-        error('ভর্তি নিশ্চিত করা যায়নি', err.message);
+        error('Confirmation Failed', err.message);
       } else {
-        error('এরর', 'একটি অপ্রত্যাশিত সার্ভার এরর ঘটেছে।');
+        error('Server Error', 'An unexpected error occurred while confirming admission.');
       }
     } finally {
       setIsConfirming(false);
@@ -77,13 +77,16 @@ export const HoldDetailCard: React.FC<HoldDetailCardProps> = ({ hold, onRefresh 
     try {
       await api.cancelHold(hold.holdId, student.id);
       setIsCancelDialogOpen(false);
-      success('আবেদন বাতিল হয়েছে', `${hold.className} শ্রেণীর সিট হোল্ড বাতিল করে আসনটি উন্মুক্ত করা হয়েছে।`);
+      success(
+        'Hold Cancelled',
+        `Seat reservation in ${hold.className} has been released.`
+      );
       onRefresh();
     } catch (err) {
       if (err instanceof ApiError) {
-        error('বাতিল করা যায়নি', err.message);
+        error('Cancellation Failed', err.message);
       } else {
-        error('এরর', 'আবেদন বাতিল করতে সমস্যা হয়েছে।');
+        error('Server Error', 'Failed to cancel the application.');
       }
     } finally {
       setIsCancelling(false);
@@ -92,15 +95,15 @@ export const HoldDetailCard: React.FC<HoldDetailCardProps> = ({ hold, onRefresh 
 
   return (
     <>
-      <Card className="bg-white border-slate-200 shadow-xs hover:shadow-md transition-shadow flex flex-col justify-between">
+      <Card className="bg-white border-zinc-200/90 shadow-2xs hover:shadow-md transition-all duration-200 flex flex-col justify-between rounded-2xl overflow-hidden">
         <div>
-          <CardHeader className="pb-3">
+          <CardHeader className="pb-3 border-b border-zinc-100">
             <div className="flex items-start justify-between gap-3">
               <div>
-                <span className="text-[11px] font-bold uppercase tracking-wider text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded border border-indigo-200">
-                  আবেদন #{hold.holdId.slice(0, 8)}
+                <span className="text-[10px] font-medium text-orange-800 bg-orange-50 px-2 py-0.5 rounded-md border border-orange-200/70 inline-block mb-1.5">
+                  ID: {hold.holdId.slice(0, 8)}...
                 </span>
-                <CardTitle className="text-xl text-slate-900 mt-2">
+                <CardTitle className="text-base sm:text-lg font-bold text-zinc-900 tracking-tight">
                   {hold.className}
                 </CardTitle>
               </div>
@@ -108,81 +111,98 @@ export const HoldDetailCard: React.FC<HoldDetailCardProps> = ({ hold, onRefresh 
             </div>
           </CardHeader>
 
-          <CardContent className="space-y-4">
-            {/* Details */}
-            <div className="space-y-2 text-xs text-slate-600 py-3 border-y border-slate-100">
-              <div className="flex justify-between">
-                <span className="text-slate-400">Hold ID:</span>
-                <span className="font-mono text-slate-800 truncate max-w-[180px] sm:max-w-none">
+          <CardContent className="space-y-4 pt-4">
+            {/* Metadata breakdown */}
+            <div className="space-y-2 text-xs py-2 bg-zinc-50/70 rounded-xl p-3 border border-zinc-200/60">
+              <div className="flex justify-between items-center">
+                <span className="text-zinc-500">Hold Tracking ID:</span>
+                <span className="text-zinc-800 text-[11px] truncate max-w-[170px] sm:max-w-none">
                   {hold.holdId}
                 </span>
               </div>
-              <div className="flex justify-between">
-                <span className="text-slate-400">Class ID:</span>
-                <span className="font-mono text-slate-800 truncate max-w-[180px] sm:max-w-none">
+              <div className="flex justify-between items-center">
+                <span className="text-zinc-500">Class ID:</span>
+                <span className="text-zinc-800 text-[11px] truncate max-w-[170px] sm:max-w-none">
                   {hold.classId}
                 </span>
               </div>
-              <div className="flex justify-between">
-                <span className="text-slate-400">
-                  {isHeld ? 'মেয়াদ শেষ হবে:' : 'মেয়াদ:'}
+              <div className="flex justify-between items-center">
+                <span className="text-zinc-500">
+                  {isHeld ? 'Expires At:' : 'Expired / Recorded:'}
                 </span>
-                <span className="font-mono text-slate-800">{formatDateTime(hold.expiresAt)}</span>
+                <span className="text-zinc-700 text-[11px]">{formatDateTime(hold.expiresAt)}</span>
               </div>
             </div>
 
-            {/* Live Countdown Timer (If Active HELD status) */}
+            {/* Live Countdown Timer (When Active HELD) */}
             {isHeld && (
-              <div className="my-2">
+              <div className="my-1">
                 <CountdownTimer expiresAt={hold.expiresAt} onExpire={handleExpire} />
               </div>
             )}
 
-            {/* Expired Notice (Without Page Reload) */}
+            {/* Expired State Notice */}
             {isEffectivelyExpired && hold.status !== 'CANCELLED' && (
-              <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200 flex items-center gap-3 text-slate-700 text-xs">
-                <AlertOctagon className="w-5 h-5 text-slate-400 shrink-0" />
+              <div className="p-3.5 rounded-xl bg-zinc-100/70 border border-zinc-200 flex items-start gap-3 text-zinc-700 text-xs">
+                <AlertOctagon className="w-4 h-4 text-zinc-400 shrink-0 mt-0.5" />
                 <div>
-                  <strong className="block font-semibold text-slate-800">আবেদনের মেয়াদ উত্তীর্ণ (EXPIRED)</strong>
-                  <span className="text-slate-500">১০ মিনিট পার হওয়ায় আসনটি স্বয়ংক্রিয়ভাবে উন্মুক্ত হয়ে গেছে। "ভর্তি ফি দিন" বাটন বন্ধ করা হয়েছে।</span>
+                  <strong className="block font-semibold text-zinc-800">Reservation Expired (EXPIRED)</strong>
+                  <span className="text-zinc-500 leading-relaxed">
+                    The 10-minute reservation window has ended. The seat was automatically restored to the open quota. Fee payment is disabled.
+                  </span>
                 </div>
               </div>
             )}
 
-            {/* Confirmed Banner */}
+            {/* Confirmed State Banner */}
             {isConfirmed && (
-              <div className="p-3.5 rounded-xl bg-emerald-50 border border-emerald-200 flex items-center gap-3 text-emerald-800 text-xs">
-                <ShieldCheck className="w-5 h-5 text-emerald-600 shrink-0" />
+              <div className="p-3.5 rounded-xl bg-emerald-50/80 border border-emerald-200/80 flex items-start gap-3 text-emerald-900 text-xs">
+                <ShieldCheck className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
                 <div>
-                  <strong className="block font-semibold">আসনটি স্থায়ীভাবে নিশ্চিত হয়েছে</strong>
-                  <span>আপনার ভর্তি সম্পূর্ণ হয়েছে। নতুন কোনো ফি দেওয়ার প্রয়োজন নেই।</span>
+                  <strong className="block font-semibold text-emerald-800">Enrollment Confirmed</strong>
+                  <span className="text-emerald-700 leading-relaxed">
+                    Your seat is permanently allocated. No additional payments or verifications required.
+                  </span>
+                </div>
+              </div>
+            )}
+
+            {/* Cancelled State Banner */}
+            {hold.status === 'CANCELLED' && (
+              <div className="p-3.5 rounded-xl bg-rose-50/80 border border-rose-200/70 flex items-start gap-3 text-rose-900 text-xs">
+                <AlertTriangle className="w-4 h-4 text-rose-500 shrink-0 mt-0.5" />
+                <div>
+                  <strong className="block font-semibold text-rose-800">Application Cancelled</strong>
+                  <span className="text-rose-700 leading-relaxed">
+                    This reservation was released by the applicant. You may apply again if seats are available.
+                  </span>
                 </div>
               </div>
             )}
           </CardContent>
         </div>
 
-        {/* Action Controls for HELD status */}
-        <CardFooter className="pt-2 border-t border-slate-100 flex items-center gap-2">
+        {/* Action Controls */}
+        <CardFooter className="pt-3 pb-3 border-t border-zinc-100 flex items-center gap-2">
           {isHeld ? (
             <>
               <Button
                 variant="emerald"
                 size="sm"
-                className="flex-1"
+                className="flex-1 font-medium text-xs"
                 leftIcon={<CreditCard className="w-4 h-4" />}
                 onClick={() => setIsConfirmDialogOpen(true)}
               >
-                ভর্তি ফি দিন (Confirm)
+                Confirm Admission
               </Button>
               <Button
                 variant="outline"
                 size="sm"
-                className="text-rose-600 border-rose-200 hover:bg-rose-50"
+                className="text-zinc-600 hover:text-rose-600 hover:border-rose-200 hover:bg-rose-50/50 text-xs font-medium"
                 leftIcon={<Trash2 className="w-4 h-4" />}
                 onClick={() => setIsCancelDialogOpen(true)}
               >
-                আবেদন বাতিল
+                Cancel Hold
               </Button>
             </>
           ) : isEffectivelyExpired && hold.status !== 'CANCELLED' && hold.status !== 'CONFIRMED' ? (
@@ -190,48 +210,53 @@ export const HoldDetailCard: React.FC<HoldDetailCardProps> = ({ hold, onRefresh 
               variant="outline"
               size="sm"
               disabled
-              className="w-full opacity-60 cursor-not-allowed text-slate-400"
+              className="w-full opacity-60 cursor-not-allowed text-zinc-400 bg-zinc-50 border-zinc-200 text-xs"
               leftIcon={<AlertOctagon className="w-4 h-4" />}
             >
-              মেয়াদ শেষ (ভর্তি ফি বন্ধ)
+              Reservation Expired (Payment Closed)
             </Button>
+          ) : isConfirmed ? (
+            <div className="w-full flex items-center justify-center gap-1.5 py-1 text-xs font-medium text-emerald-800">
+              <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+              <span>Official Student Enrollment Complete</span>
+            </div>
           ) : null}
         </CardFooter>
       </Card>
 
-      {/* Official Radix shadcn Confirm Admission Dialog */}
+      {/* Confirm Admission Dialog */}
       <Dialog open={isConfirmDialogOpen} onOpenChange={setIsConfirmDialogOpen}>
         <DialogContent className="max-w-md">
           <DialogHeader>
-            <DialogTitle>ভর্তি নিশ্চিতকরণ (Confirm Admission)</DialogTitle>
+            <DialogTitle>Confirm Student Admission</DialogTitle>
             <DialogDescription>
-              {hold.className} শ্রেণীতে আপনার সিটটি স্থায়ীভাবে নিশ্চিত করতে ফি প্রদান করুন।
+              Complete the admission fee payment to permanently secure the seat in {hold.className}.
             </DialogDescription>
           </DialogHeader>
 
           <div className="space-y-3.5 py-2">
-            <div className="p-3.5 rounded-xl bg-indigo-50 border border-indigo-100 text-indigo-900 text-xs space-y-1">
-              <div className="flex items-center gap-2 font-semibold">
+            <div className="p-3.5 rounded-xl bg-zinc-50 border border-zinc-200 text-zinc-900 text-xs space-y-1">
+              <div className="flex items-center gap-2 font-semibold text-zinc-800">
                 <CheckCircle2 className="w-4 h-4 text-emerald-600" />
-                <span>ভর্তি ফি প্রদান</span>
+                <span>Simulated Fee Processing</span>
               </div>
-              <p className="text-slate-600">
-                ভর্তি ফি কনফার্ম করলে আসনটি স্থায়ীভাবে বুক হবে এবং অন্য কোনো শিক্ষার্থী এই আসনটি নিতে পারবে না।
+              <p className="text-zinc-600 leading-relaxed">
+                Confirming converts your temporary 10-minute hold into a permanently registered seat.
               </p>
             </div>
 
-            <div className="bg-slate-50 p-3.5 rounded-xl border border-slate-200 text-xs space-y-2">
+            <div className="bg-zinc-50 p-3.5 rounded-xl border border-zinc-200 text-xs space-y-2">
               <div className="flex justify-between">
-                <span className="text-slate-500">শ্রেণী:</span>
-                <strong className="text-slate-900">{hold.className}</strong>
+                <span className="text-zinc-500">Grade / Section:</span>
+                <strong className="text-zinc-900 font-semibold">{hold.className}</strong>
               </div>
               <div className="flex justify-between">
-                <span className="text-slate-500">শিক্ষার্থী BRN:</span>
-                <span className="font-mono text-slate-800">{student.id}</span>
+                <span className="text-zinc-500">Applicant BRN:</span>
+                <span className="text-zinc-800">{student.id}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-slate-500">ভর্তি ফি:</span>
-                <span className="font-semibold text-emerald-600">সিমুলেটেড / পরীক্ষামূলক ফি</span>
+                <span className="text-zinc-500">Admission Fee:</span>
+                <span className="font-semibold text-emerald-700">Simulated / Verified</span>
               </div>
             </div>
 
@@ -239,54 +264,56 @@ export const HoldDetailCard: React.FC<HoldDetailCardProps> = ({ hold, onRefresh 
               <Button
                 type="button"
                 variant="outline"
+                size="sm"
                 onClick={() => setIsConfirmDialogOpen(false)}
                 disabled={isConfirming}
               >
-                ফিরে যান
+                Back
               </Button>
               <Button
                 type="button"
                 variant="emerald"
+                size="sm"
                 isLoading={isConfirming}
                 onClick={handleConfirmAdmission}
                 leftIcon={<CheckCircle2 className="w-4 h-4" />}
               >
-                ভর্তি ফি জমা দিন (Confirm)
+                Pay Fee & Confirm
               </Button>
             </DialogFooter>
           </div>
         </DialogContent>
       </Dialog>
 
-      {/* Official Radix shadcn Cancel Hold (Delete Hold) Confirmation Modal */}
+      {/* Cancel Hold Confirmation Dialog */}
       <Dialog open={isCancelDialogOpen} onOpenChange={setIsCancelDialogOpen}>
         <DialogContent className="max-w-md">
           <DialogHeader>
-            <DialogTitle>আবেদন বাতিল নিশ্চিতকরণ</DialogTitle>
+            <DialogTitle>Cancel Seat Reservation</DialogTitle>
             <DialogDescription>
-              আপনি কি নিশ্চিত যে আপনি এই আবেদনটি বাতিল করতে চান?
+              Are you sure you want to release your reserved seat in {hold.className}?
             </DialogDescription>
           </DialogHeader>
 
           <div className="space-y-3.5 py-2">
-            <div className="p-3.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-900 text-xs space-y-1">
+            <div className="p-3.5 rounded-xl bg-rose-50/80 border border-rose-200 text-rose-900 text-xs space-y-1">
               <div className="flex items-center gap-2 font-semibold text-rose-800">
                 <AlertTriangle className="w-4 h-4 text-rose-600" />
-                <span>সতর্কবার্তা</span>
+                <span>Immediate Seat Release Notice</span>
               </div>
-              <p className="text-slate-600">
-                আবেদনটি বাতিল করলে আপনার জন্য সংরক্ষিত আসনটি সাথে সাথে ছেড়ে দেওয়া হবে এবং অন্য কোনো শিক্ষার্থী সেটি বুক করতে পারবে। একবার বাতিল করলে তা আর ফিরিয়ে আনা যাবে না।
+              <p className="text-zinc-600 leading-relaxed">
+                Cancelling this hold immediately releases the seat back into the public pool for other applicants. This action cannot be reversed.
               </p>
             </div>
 
-            <div className="bg-slate-50 p-3 rounded-xl border border-slate-200 text-xs space-y-1.5">
+            <div className="bg-zinc-50 p-3 rounded-xl border border-zinc-200 text-xs space-y-1.5">
               <div className="flex justify-between">
-                <span className="text-slate-500">শ্রেণী:</span>
-                <span className="font-semibold text-slate-800">{hold.className}</span>
+                <span className="text-zinc-500">Class:</span>
+                <span className="font-semibold text-zinc-800">{hold.className}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-slate-500">আবেদন ট্র্যাকিং নম্বর:</span>
-                <span className="font-mono text-slate-800">{hold.holdId}</span>
+                <span className="text-zinc-500">Hold Tracking ID:</span>
+                <span className="text-zinc-800 text-[11px]">{hold.holdId}</span>
               </div>
             </div>
 
@@ -294,19 +321,21 @@ export const HoldDetailCard: React.FC<HoldDetailCardProps> = ({ hold, onRefresh 
               <Button
                 type="button"
                 variant="outline"
+                size="sm"
                 onClick={() => setIsCancelDialogOpen(false)}
                 disabled={isCancelling}
               >
-                না, আসনটি রাখুন
+                Keep Reservation
               </Button>
               <Button
                 type="button"
                 variant="destructive"
+                size="sm"
                 isLoading={isCancelling}
                 onClick={handleCancelHold}
                 leftIcon={<Trash2 className="w-4 h-4" />}
               >
-                হ্যাঁ, আবেদন বাতিল করুন
+                Confirm Cancellation
               </Button>
             </DialogFooter>
           </div>

@@ -35,7 +35,7 @@ export const AppContent: React.FC = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col font-sans selection:bg-indigo-600 selection:text-white">
+    <div className="min-h-screen bg-[#fafafa] text-zinc-900 flex flex-col font-sans selection:bg-orange-600 selection:text-white">
       {/* Top Navbar */}
       <Navbar currentView={currentView} onViewChange={handleViewChange} />
 
@@ -56,46 +56,46 @@ export const AppContent: React.FC = () => {
       </main>
 
       {/* Real-world Professional Educational SaaS Footer */}
-      <footer className="border-t border-slate-200 bg-white py-10 px-4 sm:px-6 lg:px-8 mt-16 text-xs text-slate-500 shadow-xs">
+      <footer className="border-t border-zinc-200/80 bg-white py-10 px-4 sm:px-6 lg:px-8 mt-16 text-xs text-zinc-500 shadow-2xs">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
           <div className="space-y-1">
             <div className="flex items-center gap-2">
-              <div className="w-6 h-6 rounded-lg bg-indigo-600 flex items-center justify-center text-white">
+              <div className="w-6 h-6 rounded-lg bg-orange-600 flex items-center justify-center text-white">
                 <GraduationCap className="w-3.5 h-3.5" />
               </div>
-              <span className="font-bold text-sm text-slate-900">EduAdmit Systems</span>
+              <span className="font-bold text-sm text-zinc-900">EduAdmit Systems</span>
             </div>
-            <p className="text-slate-500">
-              Centralized School Admission & Real-Time Seat Allocation Platform.
+            <p className="text-zinc-500 text-xs">
+              School Admission & Real-Time Seat Allocation Platform.
             </p>
-            <p className="text-[11px] text-slate-400">
+            <p className="text-[11px] text-zinc-400">
               © 2026 EduAdmit Inc. All rights reserved.
             </p>
           </div>
 
-          <div className="flex flex-wrap items-center gap-6 text-xs text-slate-600">
-            <a href="#/classes" onClick={() => handleViewChange('classes')} className="hover:text-indigo-600 transition-colors">
+          <div className="flex flex-wrap items-center gap-6 text-xs text-zinc-600 font-medium">
+            <a href="#/classes" onClick={() => handleViewChange('classes')} className="hover:text-orange-600 transition-colors">
               Admission Guidelines
             </a>
-            <span className="text-slate-300">•</span>
-            <a href="#/classes" onClick={() => handleViewChange('classes')} className="hover:text-indigo-600 transition-colors">
+            <span className="text-zinc-300">•</span>
+            <a href="#/classes" onClick={() => handleViewChange('classes')} className="hover:text-orange-600 transition-colors">
               Seat Quota Policies
             </a>
-            <span className="text-slate-300">•</span>
-            <a href="#/classes" onClick={() => handleViewChange('classes')} className="hover:text-indigo-600 transition-colors">
+            <span className="text-zinc-300">•</span>
+            <a href="#/classes" onClick={() => handleViewChange('classes')} className="hover:text-orange-600 transition-colors">
               Terms & Privacy
             </a>
           </div>
 
-          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 text-slate-600 bg-slate-50 px-3.5 py-2 rounded-xl border border-slate-200">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 text-zinc-600 bg-zinc-50 px-3.5 py-2 rounded-xl border border-zinc-200/80">
             <div className="flex items-center gap-1.5">
-              <Phone className="w-3.5 h-3.5 text-indigo-600" />
-              <span className="font-medium">+880 9612-000000</span>
+              <Phone className="w-3.5 h-3.5 text-orange-600" />
+              <span className="font-medium text-xs">+880 9612-000000</span>
             </div>
-            <span className="hidden sm:inline text-slate-300">|</span>
+            <span className="hidden sm:inline text-zinc-300">|</span>
             <div className="flex items-center gap-1.5">
-              <Mail className="w-3.5 h-3.5 text-indigo-600" />
-              <span>admissions@eduadmit.edu</span>
+              <Mail className="w-3.5 h-3.5 text-orange-600" />
+              <span className="text-xs">admissions@eduadmit.edu</span>
             </div>
           </div>
         </div>

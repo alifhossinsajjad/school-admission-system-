@@ -36,12 +36,12 @@ export const CountdownTimer: React.FC<CountdownTimerProps> = ({
     return (
       <div
         className={cn(
-          'inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-semibold bg-rose-50 text-rose-700 border border-rose-200',
+          'inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium bg-zinc-100 text-zinc-600 border border-zinc-200',
           className
         )}
       >
-        <AlertTriangle className="w-3.5 h-3.5 text-rose-600" />
-        <span>Hold Expired</span>
+        <AlertTriangle className="w-3.5 h-3.5 text-zinc-500" />
+        <span>Reservation Expired</span>
       </div>
     );
   }
@@ -52,14 +52,14 @@ export const CountdownTimer: React.FC<CountdownTimerProps> = ({
     return (
       <div
         className={cn(
-          'inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg font-mono text-xs font-semibold border transition-colors',
+          'inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-lg text-xs font-medium border transition-colors',
           isUrgent
             ? 'bg-rose-50 text-rose-700 border-rose-200 animate-pulse'
-            : 'bg-amber-50 text-amber-800 border-amber-200',
+            : 'bg-zinc-50 text-zinc-800 border-zinc-200',
           className
         )}
       >
-        <Timer className="w-3.5 h-3.5" />
+        <Timer className="w-3.5 h-3.5 text-zinc-600" />
         <span>{time.formatted}</span>
       </div>
     );
@@ -68,32 +68,32 @@ export const CountdownTimer: React.FC<CountdownTimerProps> = ({
   return (
     <div
       className={cn(
-        'flex items-center justify-between p-3.5 rounded-xl border transition-all',
+        'flex items-center justify-between p-3 rounded-xl border transition-all',
         isUrgent
-          ? 'bg-rose-50/80 border-rose-200 text-rose-900'
-          : 'bg-amber-50/80 border-amber-200 text-amber-900',
+          ? 'bg-rose-50/70 border-rose-200/90 text-rose-950'
+          : 'bg-zinc-50/90 border-zinc-200/90 text-zinc-900',
         className
       )}
     >
       <div className="flex items-center gap-2.5">
         <div
           className={cn(
-            'p-2 rounded-lg',
+            'p-1.5 rounded-lg',
             isUrgent ? 'bg-rose-100 text-rose-700 animate-pulse' : 'bg-amber-100 text-amber-700'
           )}
         >
           <Timer className="w-4 h-4" />
         </div>
         <div>
-          <span className="text-xs uppercase font-bold tracking-wider opacity-80 block">
-            {isUrgent ? 'Ending Soon: Complete Admission' : 'Seat Held Temporarily'}
+          <span className="text-xs font-semibold text-zinc-900 block leading-tight">
+            {isUrgent ? 'Action Required: Ending Soon' : 'Seat Reserved Temporarily'}
           </span>
-          <span className="text-xs text-slate-600">
+          <span className="text-[11px] text-zinc-500 font-normal">
             Expires in {time.minutes}m {time.seconds}s
           </span>
         </div>
       </div>
-      <div className="font-mono text-lg font-extrabold tracking-tight px-3 py-1 bg-white text-slate-900 rounded-lg border border-slate-200 shadow-xs">
+      <div className="text-sm font-semibold tracking-tight px-2.5 py-0.5 bg-white text-zinc-900 rounded-lg border border-zinc-200/90 shadow-2xs">
         {time.formatted}
       </div>
     </div>

@@ -2,25 +2,25 @@ import * as React from 'react';
 import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '@/lib/utils';
 import type { HoldStatus } from '@/types';
-import { Clock, CheckCircle, AlertOctagon, Ban } from 'lucide-react';
+import { Clock, CheckCircle2, AlertOctagon, Ban } from 'lucide-react';
 
 const badgeVariants = cva(
-  'inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-xs font-semibold tracking-wide transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2',
+  'inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-xs font-medium tracking-normal transition-colors focus:outline-none',
   {
     variants: {
       variant: {
         default:
-          'border-indigo-500/30 bg-indigo-500/10 text-indigo-300',
+          'border-zinc-200 bg-zinc-100 text-zinc-800',
         secondary:
-          'border-slate-700 bg-slate-800 text-slate-300',
+          'border-zinc-200 bg-zinc-50 text-zinc-700',
         destructive:
-          'border-rose-500/30 bg-rose-500/10 text-rose-300',
+          'border-rose-200 bg-rose-50 text-rose-700',
         outline:
-          'text-slate-300 border-slate-700',
+          'border-zinc-200 bg-white text-zinc-700',
         emerald:
-          'border-emerald-500/30 bg-emerald-500/10 text-emerald-300',
+          'border-emerald-200 bg-emerald-50 text-emerald-800',
         amber:
-          'border-amber-500/30 bg-amber-500/10 text-amber-300',
+          'border-amber-200 bg-amber-50 text-amber-800',
       },
     },
     defaultVariants: {
@@ -41,35 +41,35 @@ const statusConfigs: Record<
   { label: string; icon: React.ReactNode; styles: string; pulse?: boolean }
 > = {
   HELD: {
-    label: 'Seat Held (Active)',
-    icon: <Clock className="w-3.5 h-3.5" />,
-    styles: 'bg-amber-500/10 text-amber-300 border-amber-500/30',
+    label: 'Hold Active',
+    icon: <Clock className="w-3.5 h-3.5 text-amber-600" />,
+    styles: 'bg-amber-50 text-amber-800 border-amber-200/90 font-medium',
     pulse: true,
   },
   CONFIRMED: {
     label: 'Admission Confirmed',
-    icon: <CheckCircle className="w-3.5 h-3.5" />,
-    styles: 'bg-emerald-500/10 text-emerald-300 border-emerald-500/30',
+    icon: <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />,
+    styles: 'bg-emerald-50 text-emerald-800 border-emerald-200/90 font-medium',
   },
   EXPIRED: {
     label: 'Hold Expired',
-    icon: <AlertOctagon className="w-3.5 h-3.5" />,
-    styles: 'bg-slate-700/30 text-slate-400 border-slate-700/50',
+    icon: <AlertOctagon className="w-3.5 h-3.5 text-zinc-500" />,
+    styles: 'bg-zinc-100 text-zinc-600 border-zinc-200/80 font-medium',
   },
   CANCELLED: {
     label: 'Hold Cancelled',
-    icon: <Ban className="w-3.5 h-3.5" />,
-    styles: 'bg-rose-500/10 text-rose-300 border-rose-500/30',
+    icon: <Ban className="w-3.5 h-3.5 text-rose-500" />,
+    styles: 'bg-rose-50 text-rose-700 border-rose-200/80 font-medium',
   },
   AVAILABLE: {
     label: 'Seats Available',
-    icon: <CheckCircle className="w-3.5 h-3.5" />,
-    styles: 'bg-indigo-500/10 text-indigo-300 border-indigo-500/30',
+    icon: <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />,
+    styles: 'bg-emerald-50 text-emerald-800 border-emerald-200/90 font-medium',
   },
   FULL: {
     label: 'Class Full',
-    icon: <AlertOctagon className="w-3.5 h-3.5" />,
-    styles: 'bg-rose-500/10 text-rose-300 border-rose-500/30',
+    icon: <AlertOctagon className="w-3.5 h-3.5 text-zinc-500" />,
+    styles: 'bg-zinc-100 text-zinc-600 border-zinc-200/80 font-medium',
   },
 };
 
@@ -79,7 +79,7 @@ function Badge({ className, variant, status, showIcon = true, children, ...props
     return (
       <div
         className={cn(
-          'inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold border backdrop-blur-sm tracking-wide',
+          'inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium border tracking-normal',
           config.styles,
           className
         )}
