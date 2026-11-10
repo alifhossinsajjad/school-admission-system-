@@ -1,0 +1,16 @@
+bin/
+obj/
+.dotnet_home/
+.nuget_cache/
+*.user
+*.suo
+.vs/
+.idea/
+.vscode/
+config.bat
+node_modules/
+.env
+.env.local
+.env.*.local
+
+.vercel
